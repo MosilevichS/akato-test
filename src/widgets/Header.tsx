@@ -5,7 +5,7 @@ export const Header = () =>
     (
         <header className="bg-white/50 sticky top-0 z-50 w-full border-b border-gray-200 ">
             <div  className="mx-auto flex justify-between items-center w-full max-w-[1440px] px-4 py-5">
-                <h6>Logo</h6>
+                <Link href={ROUTES.HOME}>Logo</Link>
                 <nav className="flex gap-4 items-center ">
                     <Link href={ROUTES.HOME}>
                         home
