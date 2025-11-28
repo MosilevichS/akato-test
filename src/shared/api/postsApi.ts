@@ -5,6 +5,7 @@ interface Post {
     id: number
     title: string
     body: string
+    liked: boolean
 }
 
 export const postsApi = createApi({
@@ -15,8 +16,14 @@ export const postsApi = createApi({
     tagTypes: ['Post'],
     endpoints: (builder) => ({
         getPosts: builder.query<Post[], void>({
-            query: () => '/posts?_limit=10',
+            query: () => '/posts?_limit=12',
             providesTags: ['Post'],
+            transformResponse: (response: Post[]) => {
+                return response.map(post => ({
+                    ...post,
+                    liked: false
+                }));
+            },
         }),
         createPost: builder.mutation<Post, Partial<Post>>({
             query: (newPost) => ({

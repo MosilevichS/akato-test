@@ -1,6 +1,7 @@
 "use client";
 import {useGetPostsQuery} from "@/src/shared/api/postsApi";
 import {useEffect, useState} from "react";
+import {twMerge} from "tailwind-merge";
 
 export default function Page() {
     const {
@@ -17,6 +18,11 @@ export default function Page() {
     const postDelete = (postId: number) => {
         setActualPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
     };
+    const postLike = (postId: number) => {
+        setActualPosts(prevPosts => prevPosts.map(post =>
+            post.id === postId ? {...post, liked: !post.liked} : post
+        ));
+    };
 
     if (isLoading) {
         return <div className="px-2 py-2 items-center font-light">Loading posts .... </div>
@@ -25,6 +31,7 @@ export default function Page() {
     if (error) {
         return <div className="px-2 py-2 items-center font-light">Error.....</div>
     }
+    console.log(actualPosts);
 
 
   return (
@@ -35,7 +42,9 @@ export default function Page() {
                   <p className="text-black max-h-[170px] overflow-hidden"><span className="text-red-400 mr-2">Body:</span>{post.body}</p>
                   <span className="text-red-400 mr-4">Id:</span> <span className="text-black">{post.id}</span>
                   <button
-                      className="absolute bottom-0.5 right-0.5 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group">
+                      className={twMerge("absolute bottom-0.5 right-0.5 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group",
+                          post.liked ? "bg-red-500" : "")}
+                      onClick={() => postLike(post.id)}>
                       <svg
                           className="w-3 h-3 text-gray-500 group-hover:text-white transition-colors"
                           fill="none"
@@ -48,7 +57,7 @@ export default function Page() {
                   </button>
                   <button
                       className="absolute bottom-0.5 left-0.5 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group"
-                  onClick={() => postDelete(post.id)}>
+                      onClick={() => postDelete(post.id)}>
                       <svg
                           className="w-3 h-3 text-gray-500 group-hover:text-white transition-colors"
                           fill="none"
