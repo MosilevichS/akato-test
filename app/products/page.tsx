@@ -39,7 +39,7 @@ export default function Page() {
             <div className="w-full relative flex items-center justify-center px-5 py-5 border-b border-gray-200">
                 <h1 className="text-black text-3xl font-bold text-center">Product's page</h1>
                 <button
-                    className="absolute right-5 w-10 h-10 text-gray-500 hover:text-blue-500 transition-colors"
+                    className="absolute right-5 w-10 cursor-pointer h-10 text-gray-500 hover:text-blue-500 transition-colors"
                     onClick={() => setFilteredPosts(!filteredPosts)}
                 >
                     <svg

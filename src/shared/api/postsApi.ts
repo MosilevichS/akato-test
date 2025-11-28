@@ -25,14 +25,24 @@ export const postsApi = createApi({
                 }));
             },
         }),
-        createPost: builder.mutation<Post, Partial<Post>>({
-            query: (newPost) => ({
-                url: '/posts',
-                method: 'POST',
-                body: newPost,
-            }),
-            invalidatesTags: ['Post'],
+        createPost: builder.mutation<{ success: boolean }, Partial<Post>>({
+            queryFn: (newPost, api) => {
+                const postForRedux: Post = {
+                    id: newPost.id || Math.floor(Math.random()),
+                    title: newPost.title || '',
+                    body: newPost.body || '',
+                    userId: newPost.userId || 1,
+                    liked: false
+                };
+                api.dispatch(
+                    postsApi.util.updateQueryData('getPosts', undefined, (draftPosts) => {
+                        draftPosts.push(postForRedux);
+                    })
+                );
+                return { data: { success: true } };
+            },
         }),
+
         LikedPost: builder.mutation<void, { postId: number; liked: boolean }>({
             query: () => ({url: '', method: 'POST'}),
             onQueryStarted: ({postId, liked}, {dispatch}) => {

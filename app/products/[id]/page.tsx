@@ -7,7 +7,7 @@ export default function ProductPage() {
     const params = useParams();
     const id = params.id as string;
 
-    const {data: posts, isLoading, error} = useGetPostsQuery();
+    const {data: posts} = useGetPostsQuery();
     const [product, setProduct] = useState<any>(null);
 
     useEffect(() => {
