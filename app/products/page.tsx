@@ -2,6 +2,7 @@
 import {useDeletePostMutation, useGetPostsQuery, useLikedPostMutation} from "@/src/shared/api/postsApi";
 import {twMerge} from "tailwind-merge";
 import {useState} from "react";
+import Link from "next/link";
 
 export default function Page() {
     const {
@@ -54,6 +55,7 @@ export default function Page() {
 
             <div className="px-5 py-6 columns-8  gap-4 space-y-4">
                 {posts?.filter(post => filteredPosts ? post.liked : true).map((post) => (
+                    <Link href={`/products/${post.id}`} key={post.id}>
                     <div key={post.id}
                          className="mb-4 px-4 py-3 border relative border-gray-300 rounded-lg bg-lime-100 h-[300px] break-inside-avoid">
                         <h3 className="text-black font-semibold h-12 overflow-hidden mb-2">
@@ -69,12 +71,15 @@ export default function Page() {
 
                         <button
                             className={twMerge(
-                                "absolute bottom-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors group",
+                                "absolute cursor-pointer bottom-2 right-2 w-6 h-6 rounded-full flex items-center justify-center transition-colors group",
                                 post.liked
                                     ? "bg-red-500 hover:bg-red-600"
                                     : "bg-gray-200 hover:bg-red-500"
                             )}
-                            onClick={() => postLike(post.id, post.liked)}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                postLike(post.id, post.liked)}}
                         >
                             <svg
                                 className={twMerge(
@@ -93,8 +98,13 @@ export default function Page() {
                         </button>
 
                         <button
-                            className="absolute bottom-2 left-2 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group"
-                            onClick={() => postDelete(post.id)}
+                            className="absolute cursor-pointer bottom-2 left-2 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group"
+                            onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                postDelete(post.id)
+                               }}
+
                         >
                             <svg
                                 className="w-3 h-3 text-gray-500 group-hover:text-white transition-colors"
@@ -107,7 +117,11 @@ export default function Page() {
                             </svg>
                         </button>
                     </div>
-                ))}
+                    </Link>
+                ))
+
+                }
+
             </div>
         </>
     );
