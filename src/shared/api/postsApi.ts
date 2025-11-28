@@ -33,9 +33,38 @@ export const postsApi = createApi({
             }),
             invalidatesTags: ['Post'],
         }),
+        LikedPost: builder.mutation<void, { postId: number; liked: boolean }>({
+            query: () => ({url: '', method: 'POST'}),
+            onQueryStarted: ({postId, liked}, {dispatch}) => {
+                dispatch(
+                    postsApi.util.updateQueryData('getPosts', undefined, draft => {
+                        const post = draft.find(p => p.id === postId);
+                        if (post) {
+                            post.liked = liked;
+                        }
+                    })
+                );
+            },
+        }),
+        deletePost: builder.mutation<void, number>({
+            query: (postId) => ({
+                url: `/posts/${postId}`,
+                method: 'DELETE',
+            }),
+            onQueryStarted: (postId, {dispatch}) => {
+                dispatch(
+                    postsApi.util.updateQueryData('getPosts', undefined, draft => {
+                        return draft.filter(post => post.id !== postId);
+                    })
+                );
+            },
+        }),
     }),
 });
+
 export const {
     useGetPostsQuery,
     useCreatePostMutation,
+    useLikedPostMutation,
+    useDeletePostMutation
 } = postsApi

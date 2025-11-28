@@ -1,6 +1,5 @@
 "use client";
-import {useGetPostsQuery} from "@/src/shared/api/postsApi";
-import {useEffect, useState} from "react";
+import {useDeletePostMutation, useGetPostsQuery, useLikedPostMutation} from "@/src/shared/api/postsApi";
 import {twMerge} from "tailwind-merge";
 
 export default function Page() {
@@ -9,19 +8,18 @@ export default function Page() {
         error,
         isLoading,
     } = useGetPostsQuery()
-    const [actualPosts, setActualPosts] = useState(posts || []);
-    useEffect(() => {
-        if (posts) {
-            setActualPosts(posts);
-        }
-    }, [posts]);
+    const [LikedPost] = useLikedPostMutation();
+    const [deletePost] = useDeletePostMutation()
+
+
     const postDelete = (postId: number) => {
-        setActualPosts(prevPosts => prevPosts.filter(post => post.id !== postId));
+        deletePost(postId);
     };
-    const postLike = (postId: number) => {
-        setActualPosts(prevPosts => prevPosts.map(post =>
-            post.id === postId ? {...post, liked: !post.liked} : post
-        ));
+    const postLike = async (postId: number, currentlyLiked: boolean) => {
+        LikedPost({
+            postId,
+            liked: !currentlyLiked
+        });
     };
 
     if (isLoading) {
@@ -31,12 +29,11 @@ export default function Page() {
     if (error) {
         return <div className="px-2 py-2 items-center font-light">Error.....</div>
     }
-    console.log(actualPosts);
 
 
   return (
       <div className="ml-auto px-5 py-6 columns-8 gap-x-1 space-y-4">
-          {actualPosts?.map((post) => (
+          {posts?.map((post) => (
               <div key={post.id} className="mb-2 px-4 py-2 border relative border-gray-300 rounded-lg bg-lime-100 w-[200px] h-[300px] break-inside-avoid">
                   <h3 className="text-black h-[50px] max-h-[50px] overflow-hidden" ><span className="text-red-400">Title:</span> {post.title}</h3>
                   <p className="text-black max-h-[170px] overflow-hidden"><span className="text-red-400 mr-2">Body:</span>{post.body}</p>
@@ -44,7 +41,7 @@ export default function Page() {
                   <button
                       className={twMerge("absolute bottom-0.5 right-0.5 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group",
                           post.liked ? "bg-red-500" : "")}
-                      onClick={() => postLike(post.id)}>
+                      onClick={() => postLike(post.id, post.liked)}>
                       <svg
                           className="w-3 h-3 text-gray-500 group-hover:text-white transition-colors"
                           fill="none"
@@ -57,7 +54,8 @@ export default function Page() {
                   </button>
                   <button
                       className="absolute bottom-0.5 left-0.5 w-6 h-6 bg-gray-200 hover:bg-red-500 rounded-full flex items-center justify-center transition-colors group"
-                      onClick={() => postDelete(post.id)}>
+                      onClick={() => postDelete(post.id)}
+                  >
                       <svg
                           className="w-3 h-3 text-gray-500 group-hover:text-white transition-colors"
                           fill="none"
