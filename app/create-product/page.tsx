@@ -47,7 +47,7 @@ export default function CreateProductPage() {
                     <input
                         type="text"
                         placeholder="Enter product title"
-                        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
+                        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none text-black focus:ring-2 focus:ring-blue-300 focus:border-transparent"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         required
@@ -61,7 +61,7 @@ export default function CreateProductPage() {
                     </label>
                     <textarea
                         placeholder="Enter product description"
-                        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent resize-none"
+                        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-blue-300 focus:border-transparent resize-none"
                         rows={3}
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
@@ -78,7 +78,7 @@ export default function CreateProductPage() {
                         <input
                             type="number"
                             placeholder="Enter ID"
-                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
+                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-blue-300 focus:border-transparent"
                             value={id}
                             onChange={(e) => setId(e.target.value)}
                             required
@@ -93,7 +93,7 @@ export default function CreateProductPage() {
                         <input
                             type="number"
                             placeholder="Enter User ID"
-                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent"
+                            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-blue-300 focus:border-transparent"
                             value={userId}
                             onChange={(e) => setUserId(e.target.value)}
                             required
