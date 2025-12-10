@@ -1,8 +1,17 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useCreatePostMutation } from "@/src/shared/api/postsApi";
+import { useForm, SubmitHandler } from "react-hook-form"
+
+interface IFormInput {
+  title: string;
+  body: string;
+  userId: number;
+  id: number;
+}
 
 export default function CreateProductPage() {
+  const { register, handleSubmit, formState: { errors },} = useForm<IFormInput>()
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [id, setId] = useState("");
@@ -19,8 +28,7 @@ export default function CreateProductPage() {
     }
   }, [isSuccess]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit: SubmitHandler<IFormInput>  = (data) => {
     const newPost = {
       title,
       body: description,
@@ -38,21 +46,38 @@ export default function CreateProductPage() {
 
       <form
         className="p-6 max-w-2xl mx-auto border border-gray-300 rounded-lg bg-white shadow-md"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className="mb-4">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Product Title *
           </label>
           <input
-            type="text"
-            placeholder="Enter product title"
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none text-black focus:ring-2 focus:ring-blue-300 focus:border-transparent"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-            minLength={5}
+              type="text"
+              placeholder="Enter product title"
+              className={`w-full p-3 border rounded-md focus:outline-none text-black focus:ring-2 focus:border-transparent ${
+                  errors.title
+                      ? "border-red-500 focus:ring-red-300"
+                      : "border-gray-300 focus:ring-blue-300"
+              }`}
+              {...register("title", {
+                required: "Title is required",
+                maxLength: {
+                  value: 20,
+                  message: "Title must be less than 20 characters"
+                },
+                minLength: {
+                  value: 3,
+                  message: "Title must be at least 3 characters"
+                }
+              })}
+              aria-invalid={errors.title ? "true" : "false"}
           />
+          {errors.title && (
+              <p className="mt-1 text-sm text-red-600" role="alert">
+                {errors.title.message}
+              </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -60,14 +85,26 @@ export default function CreateProductPage() {
             Product Description *
           </label>
           <textarea
-            placeholder="Enter product description"
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-blue-300 focus:border-transparent resize-none"
-            rows={3}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-            minLength={10}
+              placeholder="Enter product description"
+              className={`w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 text-black focus:ring-blue-300 focus:border-transparent resize-none ${
+                  errors.body
+                      ? "border-red-500 focus:ring-red-300"
+                      : "border-gray-300 focus:ring-blue-300"
+              }`}
+              {...register("body", {
+                required: "Description is required",
+                minLength: {
+                  value: 10,
+                  message: "Description must be at least 3 characters"
+                }
+              })}
+              aria-invalid={errors.body ? "true" : "false"}
           />
+          {errors.body && (
+              <p className="mt-1 text-sm text-red-600" role="alert">
+                {errors.body.message}
+              </p>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
